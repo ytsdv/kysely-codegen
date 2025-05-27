@@ -75,7 +75,10 @@ const expressionNodeSchema = z.union([
 ]);
 
 const overridesSchema = z
-  .object({ columns: z.record(z.string(), expressionNodeSchema).optional() })
+  .object({
+    columns: z.record(z.string(), expressionNodeSchema).optional(),
+    dataTypes: z.record(z.string(), z.string()).optional(),
+  })
   .optional();
 
 export const configSchema = z.object({

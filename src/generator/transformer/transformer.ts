@@ -45,6 +45,19 @@ export type Overrides = {
    * ```
    */
   columns?: Record<string, ExpressionNode | string>;
+
+  /**
+   * Specifies type overrides for data types.
+   *
+   * @example
+   * ```ts
+   * {
+   *   dataTypes: {
+   *     "uuid": "string"
+   *   }
+   * }
+   */
+  dataTypes?: Record<string, string>;
 };
 
 type TransformContext = {
@@ -331,7 +344,11 @@ const transformColumnToArgs = (
   context: TransformContext,
 ) => {
   const dataType = column.dataType.toLowerCase();
-  const scalarNode = context.scalars[dataType];
+
+  let scalarNode = context.scalars[dataType];
+  if (context.overrides?.dataTypes?.[dataType]) {
+    scalarNode = new IdentifierNode(context.overrides.dataTypes[dataType]);
+  }
 
   if (scalarNode) {
     return [scalarNode];
